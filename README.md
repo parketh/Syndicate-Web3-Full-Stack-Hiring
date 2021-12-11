@@ -1,4 +1,10 @@
-# Web3-Full-Stack-Hiring
+# Syndicate-Web3-Full-Stack-Hiring
+
+## Project
+
+The completed web app can be found on Heroku at https://stablecoin-balance-checker.herokuapp.com/.
+
+## Introduction
 
 Hello! If you're reading this, you applied to a Full Stack Engineering role at Syndicate. This is Syndicate's hiring test for Full Stack engineers. (Note: If you have not applied but stumbled across this repository somehow, you are welcome to check out our [job postings](https://www.notion.so/syndicateprotocol/Full-Stack-Software-Engineer-db5887b717b94d8e8eb80748ae9b9d97).)
 
@@ -20,14 +26,14 @@ Note that Dai does have an [official library](https://www.npmjs.com/package/@mak
 
 As discussed above, your **primary task** is to produce an interface that has:
 
-- An input bar where a user can enter in an Ethereum address
-- A display that shows the DAI balance for the entered Ethereum address. This should be displayed in US Dollars, not `wei`. This is described in more detail in the Helpful Resources section below.
-- Host your app on Heroku or on any other service you have access to and attach a link to the hosted app on your project's README.md file.
+-   An input bar where a user can enter in an Ethereum address
+-   A display that shows the DAI balance for the entered Ethereum address. This should be displayed in US Dollars, not `wei`. This is described in more detail in the Helpful Resources section below.
+-   Host your app on Heroku or on any other service you have access to and attach a link to the hosted app on your project's README.md file.
 
 If you have extra time available, feel free to show off your strengths! You can style the site, cache the most recent input, or implement any of the following features:
 
-- Displaying the value of DAI in alternative currencies (e.g. the value of DAI when the 1 DAI = $1 US Dollar representation is converted to Euros)
-- Querying USDC in addition to DAI (You would use the erc20.js ABI and the USDC contract addresses found in Dai-Web3-Example.js). This is harder because USDC uses six decimals while DAI uses 18. Decimals are described in more detail in the Helpful Resources section below.
+-   Displaying the value of DAI in alternative currencies (e.g. the value of DAI when the 1 DAI = $1 US Dollar representation is converted to Euros)
+-   Querying USDC in addition to DAI (You would use the erc20.js ABI and the USDC contract addresses found in Dai-Web3-Example.js). This is harder because USDC uses six decimals while DAI uses 18. Decimals are described in more detail in the Helpful Resources section below.
 
 There is no need to complete any of these additional tasks, but you're always welcome to do so if you want to highlight an area of expertise.
 
@@ -35,10 +41,10 @@ There is no need to complete any of these additional tasks, but you're always we
 
 To query the Ethereum blockchain for the DAI balance, you will want to use [web3.js](https://web3js.readthedocs.io/en/v1.3.4/getting-started.html) or a [React wrapper](https://github.com/NoahZinsmeister/web3-react/tree/v6/docs#web3-reactcore-api-reference) for it. You will need a gateway to access the Ethereum blockchain (Dai refers to this as a provider and has examples [here](https://web3js.readthedocs.io/en/v1.3.4/include_package-core.html?highlight=givenProvider#example)). You can use any of the following gateways:
 
-- The [Cloudflare Ethereum Gateway](https://developers.cloudflare.com/distributed-web/ethereum-gateway/interacting-with-the-eth-gateway). This does not require any API key.
-- An [Infura.io gateway](https://infura.io/docs/ethereum). This does require a free API key. The network you'll want is "mainnet".
-- A local Ethereum server using [Ganache](https://www.npmjs.com/package/ganache-cli). We already have one set up in [this repository](https://github.com/SyndicateProtocol/Bank-Solidity-Hiring#setup-instructions) that contains the hiring test for Solidity engineers. You can use this by running `npm install -g ganache-cli`, `npm install`, and then `npm start`.
-- The [MetaMask Chrome browser extension](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en), which will automatically provision a gateway for you and make that available to `web3.js`.
+-   The [Cloudflare Ethereum Gateway](https://developers.cloudflare.com/distributed-web/ethereum-gateway/interacting-with-the-eth-gateway). This does not require any API key.
+-   An [Infura.io gateway](https://infura.io/docs/ethereum). This does require a free API key. The network you'll want is "mainnet".
+-   A local Ethereum server using [Ganache](https://www.npmjs.com/package/ganache-cli). We already have one set up in [this repository](https://github.com/SyndicateProtocol/Bank-Solidity-Hiring#setup-instructions) that contains the hiring test for Solidity engineers. You can use this by running `npm install -g ganache-cli`, `npm install`, and then `npm start`.
+-   The [MetaMask Chrome browser extension](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en), which will automatically provision a gateway for you and make that available to `web3.js`.
 
 The DAI code is hosted by a smart contract located [here](https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f). To query it, you will connect to the Ethereum blockchain via a gateway, import the DAI ABI (essentially a file that specifies the available methods) into web3.js, and then use the DAI's [balanceOf](https://docs.makerdao.com/smart-contract-modules/dai-module/dai-detailed-documentation#dai-glossary) method with a user's wallet address to query the DAI smart contract.
 

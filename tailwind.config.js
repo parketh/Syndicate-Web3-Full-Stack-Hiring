@@ -1,5 +1,5 @@
 module.exports = {
-    content: ["./src/**/*.js"],
+    purge: ["./src/**/*.js"],
     theme: {
         fontFamily: {
             sans: ["Helvetica", "sans-serif"],
