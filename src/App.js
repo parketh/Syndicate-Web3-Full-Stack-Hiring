@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react"
 import NumberFormat from "react-number-format"
 
-import { retrieveDaiBalance } from "./utils/retrieveDaiBalance.js"
+import { retrieveDaiBalance, retrieveUsdcBalance } from "./utils/retrieveBalances.js"
 import { isAddress } from "./utils/isAddress.js"
 
 const App = () => {
     const [address, setAddress] = useState("")
     const [isValid, setIsValid] = useState("")
     const [alert, setAlert] = useState({ message: " ", color: "black" })
-    const [balance, setBalance] = useState("n/a")
+    const [daiBalance, setDaiBalance] = useState("n/a")
+    const [usdcBalance, setUsdcBalance] = useState("n/a")
 
     useEffect(async () => {
         async function checkIfValid() {
@@ -35,8 +36,10 @@ const App = () => {
         event.preventDefault()
         if (isValid) {
             setAlert({ message: "Valid address! 👍", color: "green-600" })
-            const retrievedBalance = await retrieveDaiBalance()
-            setBalance(retrievedBalance)
+            const retrievedDaiBalance = await retrieveDaiBalance(address)
+            setDaiBalance(retrievedDaiBalance)
+            const retrievedUsdcBalance = await retrieveUsdcBalance(address)
+            setUsdcBalance(retrievedUsdcBalance)
         } else {
             setAlert({ message: "Invalid address! 😔 Please try again.", color: "red-600" })
         }
@@ -88,12 +91,25 @@ const App = () => {
                 </div>
             </div>
             <div className="flex justify-center mt-8">
-                <div className="flex justify-center bg-gray-200 p-8 rounded-lg space-x-3">
+                <div className="grid grid-rows-2 justify-center bg-gray-200 p-8 rounded-lg">
                     <div className="font-semibold flex w-96 space-x-1">
                         <span>Dai Balance:</span>
                         <span>
                             <NumberFormat
-                                value={balance}
+                                value={daiBalance}
+                                displayType={"text"}
+                                thousandSeparator={true}
+                                prefix={"$"}
+                                decimalScale={2}
+                                fixedDecimalScale="true"
+                            />
+                        </span>
+                    </div>
+                    <div className="font-semibold flex w-96 space-x-1">
+                        <span>USDC Balance:</span>
+                        <span>
+                            <NumberFormat
+                                value={usdcBalance}
                                 displayType={"text"}
                                 thousandSeparator={true}
                                 prefix={"$"}
