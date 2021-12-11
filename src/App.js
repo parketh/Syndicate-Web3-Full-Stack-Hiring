@@ -3,6 +3,7 @@ import NumberFormat from "react-number-format"
 
 import { retrieveDaiBalance, retrieveUsdcBalance } from "./utils/retrieveBalances.js"
 import { isAddress } from "./utils/isAddress.js"
+import { getExchangeRates } from "./utils/getExchangeRates.js"
 
 const sampleAddress = "0xa1D8d972560C2f8144AF871Db508F0B0B10a3fBf"
 
@@ -12,8 +13,10 @@ const App = () => {
     const [alert, setAlert] = useState({ message: " ", color: "black" })
     const [daiBalance, setDaiBalance] = useState("n/a")
     const [usdcBalance, setUsdcBalance] = useState("n/a")
+    const [dispCurr, setDispCurr] = useState("$")
+    const [rate, setRate] = useState(1)
 
-    useEffect(async () => {
+    useEffect(() => {
         async function checkIfValid() {
             const isValidResult = await isAddress(address)
             setIsValid(isValidResult)
@@ -53,6 +56,17 @@ const App = () => {
         }
     }
 
+    const toggleDispCurrency = async () => {
+        if (dispCurr === "$") {
+            setDispCurr("£")
+            const rates = await getExchangeRates()
+            setRate(rates.GBP)
+        } else {
+            setDispCurr("$")
+            setRate(1)
+        }
+    }
+
     return (
         <div className="h-screen bg-white">
             <div className="flex justify-center p-4 border-b-2">
@@ -61,11 +75,13 @@ const App = () => {
             <div className="flex justify-center mt-8">
                 <div className="flex flex-col space-y-2 justify-center bg-gray-200 p-8 rounded-lg">
                     <div className="font-semibold flex text-sm">Address</div>
-                    <div className="outline-none flex p-2 px-3 bg-white rounded-md h-10 text-sm w-104 justify-between">
+                    <div className="flex p-2 px-3 bg-white rounded-md h-10 text-sm w-104 justify-between">
                         <input
                             type="text"
                             placeholder="Enter Ethereum address (0x...)"
-                            className={`outline-none rounded px-2 h-6 w-92 + ${isValid ? "bg-cyanLight" : "bg-white"}`}
+                            className={`outline-none border-0 focus:ring-0 focus:outline-none rounded px-2 h-6 w-92 + ${
+                                isValid ? "bg-blue-200" : "bg-white"
+                            }`}
                             value={address}
                             onChange={(event) => setAddress(event.target.value)}
                             autoFocus
@@ -73,7 +89,9 @@ const App = () => {
                         <img
                             src="../clear.png"
                             alt="Clear"
-                            className={`w-2.5 h-2.5 my-2 hover:opacity-50 " + ${address === "" ? "hidden" : ""}`}
+                            className={`w-2.5 h-2.5 my-2 hover:opacity-50 cursor-pointer " + ${
+                                address === "" ? "hidden" : ""
+                            }`}
                             onClick={clearSampleAddress}
                         />
                     </div>
@@ -88,7 +106,7 @@ const App = () => {
                             Use sample address
                         </button>
                         <button
-                            className="bg-cyan w-full px-3 p-1 rounded-md text-white font-semibold h-10 hover:opacity-60"
+                            className="bg-blue-600 w-full px-3 p-1 rounded-md text-white font-semibold h-10 hover:opacity-60"
                             onClick={checkAddressBalance}
                         >
                             Check address balance
@@ -97,7 +115,7 @@ const App = () => {
                 </div>
             </div>
             <div className="flex justify-center mt-8">
-                <div className="flex flex-col justify-center bg-gray-200 p-8 rounded-lg text-gray-600 space-y-1 pb-12">
+                <div className="flex flex-col justify-center bg-gray-200 p-8 rounded-lg text-gray-600 space-y-2">
                     <div className="text-center font-semibold mb-3">Wallet Balances</div>
                     <div className="flex w-104 justify-between">
                         <div className="flex space-x-2">
@@ -109,10 +127,10 @@ const App = () => {
                                 daiBalance
                             ) : (
                                 <NumberFormat
-                                    value={daiBalance}
+                                    value={daiBalance * rate}
                                     displayType={"text"}
                                     thousandSeparator={true}
-                                    prefix={"$"}
+                                    prefix={dispCurr}
                                     decimalScale={2}
                                     fixedDecimalScale="true"
                                 />
@@ -129,25 +147,36 @@ const App = () => {
                                 daiBalance
                             ) : (
                                 <NumberFormat
-                                    value={usdcBalance}
+                                    value={usdcBalance * rate}
                                     displayType={"text"}
                                     thousandSeparator={true}
-                                    prefix={"$"}
+                                    prefix={dispCurr}
                                     decimalScale={2}
                                     fixedDecimalScale="true"
                                 />
                             )}
                         </span>
                     </div>
+                    <div className="flex w-104 space-x-1 justify-between pt-4">
+                        <span className="text-sm font-semibold pt-1">Units</span>
+                        <div className="flex space-x-2.5 text-gray-600">
+                            <span className="pt-0.5 text-sm font-medium">$</span>
+                            <label className="flex items-center cursor-pointer relative">
+                                <input
+                                    type="checkbox"
+                                    id="toggle-example"
+                                    className="sr-only"
+                                    value={dispCurr}
+                                    onChange={() => toggleDispCurrency()}
+                                />
+                                <div className="toggle-bg bg-blue-600 border border-gray-200 h-6 w-11 rounded-full"></div>
+                                <span className="ml-3 text-sm font-medium">£</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-
-                <label for="toggle-example" class="flex items-center cursor-pointer relative mb-4">
-                    <input type="checkbox" id="toggle-example" class="sr-only" />
-                    <div class=" bg-gray-200 border border-gray-200 h-6 w-11 rounded-full"></div>
-                    <span class="ml-3 text-gray-900 text-sm font-medium">Toggle me</span>
-                </label>
             </div>
-            <div className="text-center mt-20 flex flex-col space-y-2 border-t-2 pt-5">
+            <div className="text-center mt-20 flex flex-col space-y-2 border-t-2 pt-6">
                 <span className="text-sm text-gray-400">
                     Written by Park Yeung for the Syndicate Full Stack Engineering Test.
                 </span>
